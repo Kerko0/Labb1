@@ -8,11 +8,10 @@ namespace Labb
 {
     internal class Labb1
     {
-        static bool endIndexSet;
-        static bool pathHasLetter;    
+        static bool endIndexSet;   
         static int lineCount;
         static int startIndex;
-        static int endIndex;       
+        static int endIndex;
         static Int64 allNumbersAdded;
 
         static bool isEntireStringIndexed = false;
@@ -24,14 +23,13 @@ namespace Labb
             while (!isEntireStringIndexed)
             {
                 InputIndexer(readInput);
-
-                if (!pathHasLetter && endIndexSet)
+                
+                if (endIndexSet)
                 {
-                    LinePrinter(readInput, startIndex, endIndex);
+                    LineColorAndPrint(readInput, startIndex, endIndex);
                     NumberAdder(readInput, startIndex, endIndex);
                 }
 
-                pathHasLetter = false;
                 endIndexSet = false;
                 lineCount++;
             }
@@ -51,28 +49,34 @@ namespace Labb
             startIndex = lineCount;
 
             char nextNumToCheck = input[lineCount];
+
             for (int letterCount = 0; letterCount < input.Length; letterCount++)
             {
                 if (nextNumToCheck == input[letterCount])
                 {
                     if (letterCount > startIndex && !endIndexSet)
                     {
-                        endIndexSet = true;
                         endIndex = letterCount + 1;
+
+                        for (int i = startIndex; i < endIndex; i++)
+                        {
+                            if (char.IsLetter(input[i]))
+                            {
+                                endIndexSet = false;
+                                endIndex = 0;
+                            }
+                            else
+                            {
+                                endIndexSet = true;
+                            }                         
+                        }                   
                     }
                 }
-            }
-
-            for (int i = startIndex; i < endIndex; i++)
-            {
-                if (char.IsLetter(input[i]))
-                {
-                    pathHasLetter = true;
-                }
-            }
+                
+            }         
         }
 
-        private static void LinePrinter(string input, int startIndex, int endIndex)
+        private static void LineColorAndPrint(string input, int startIndex, int endIndex)
         {
             for (int i = 0; i < input.Length; i++)
             {
@@ -100,8 +104,7 @@ namespace Labb
                 if (i >= startIndex && i < endIndex)
                 {
                     fullNumber = fullNumber + input[i];
-                }
-                
+                }              
             }
 
             allNumbersAdded = allNumbersAdded + Convert.ToInt64(fullNumber);
