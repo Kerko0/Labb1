@@ -13,21 +13,20 @@ namespace Labb
         static int startIndex;
         static int endIndex;
         static Int64 allNumbersAdded;
-
         static bool isEntireStringIndexed = false;
-        public static void Run(string readInput)
+        public static void Run(string input)
         {
             lineCount = 0;
             startIndex = 0;
 
             while (!isEntireStringIndexed)
             {
-                InputIndexer(readInput);
+                InputIndexer(input);
                 
                 if (endIndexSet)
                 {
-                    LineColorAndPrint(readInput, startIndex, endIndex);
-                    NumberAdder(readInput, startIndex, endIndex);
+                    LineColorAndPrint(input, startIndex, endIndex);
+                    NumberAdder(input, startIndex, endIndex);
                 }
 
                 endIndexSet = false;
@@ -52,27 +51,22 @@ namespace Labb
 
             for (int letterCount = 0; letterCount < input.Length; letterCount++)
             {
-                if (nextNumToCheck == input[letterCount])
-                {
-                    if (letterCount > startIndex && !endIndexSet)
+                if (nextNumToCheck == input[letterCount] && letterCount > startIndex && !endIndexSet)
+                {                   
+                    endIndex = letterCount + 1;
+                    for (int i = startIndex; i < endIndex; i++)
                     {
-                        endIndex = letterCount + 1;
-
-                        for (int i = startIndex; i < endIndex; i++)
+                        if (char.IsLetter(input[i]))
                         {
-                            if (char.IsLetter(input[i]))
-                            {
-                                endIndexSet = false;
-                                endIndex = 0;
-                            }
-                            else
-                            {
-                                endIndexSet = true;
-                            }                         
-                        }                   
+                            endIndexSet = false;
+                            endIndex = 0;
+                        }
+                        else
+                        {
+                            endIndexSet = true;
+                        }
                     }
-                }
-                
+                }               
             }         
         }
 
