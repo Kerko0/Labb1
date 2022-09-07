@@ -25,7 +25,7 @@ namespace Labb
             while (!isEntireStringIndexed)
             {
                 LineIndexer();
-                LinePrinter(startIndex, endIndex);
+                LinePrinter();
                 pathHasLetter = false;
                 endIndexSet = false;
                 lineCount++;
@@ -66,7 +66,7 @@ namespace Labb
             }
         }
 
-        private static void LinePrinter(int startIndex, int endIndex)
+        private static void LinePrinter()
         {
             string fullNumber = "";
 
