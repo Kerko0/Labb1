@@ -8,24 +8,29 @@ namespace Labb
 {
     internal class Labb1
     {
-        static bool endIndexSet = false;
-        static bool pathHasLetter = false;
-        static bool isEntireStringIndexed = false;
-        static int startIndex = 0;
-        static int endIndex = 0;
-        static int lineCount = 0;
-        static string input;
-        static Int64 allNumbersAdded = 0;
+        static bool endIndexSet;
+        static bool pathHasLetter;    
+        static int lineCount;
+        static int startIndex;
+        static int endIndex;       
+        static Int64 allNumbersAdded;
 
-        public static void Run()
+        static bool isEntireStringIndexed = false;
+        public static void Run(string readInput)
         {
-            Console.Write("Please input a random string of letters and numbers: ");
-            input = Console.ReadLine();
+            lineCount = 0;
+            startIndex = 0;
 
             while (!isEntireStringIndexed)
             {
-                LineIndexer();
-                LinePrinter();
+                InputIndexer(readInput);
+
+                if (!pathHasLetter && endIndexSet)
+                {
+                    LinePrinter(readInput, startIndex, endIndex);
+                    NumberAdder(readInput, startIndex, endIndex);
+                }
+
                 pathHasLetter = false;
                 endIndexSet = false;
                 lineCount++;
@@ -36,7 +41,7 @@ namespace Labb
             Console.WriteLine(allNumbersAdded);
 
         }
-        private static void LineIndexer()
+        private static void InputIndexer(string input)
         {
             if (lineCount == (input.Length - 1))
             {
@@ -44,6 +49,7 @@ namespace Labb
             }
 
             startIndex = lineCount;
+
             char nextNumToCheck = input[lineCount];
             for (int letterCount = 0; letterCount < input.Length; letterCount++)
             {
@@ -66,31 +72,40 @@ namespace Labb
             }
         }
 
-        private static void LinePrinter()
+        private static void LinePrinter(string input, int startIndex, int endIndex)
+        {
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (i >= startIndex && i < endIndex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                else
+                {
+                    Console.ResetColor();
+                }
+
+                Console.Write(input[i]);
+            }
+
+            Console.WriteLine();
+        }
+
+        private static void NumberAdder(string input, int startIndex, int endIndex)
         {
             string fullNumber = "";
 
-            if (!pathHasLetter && endIndexSet)
+            for (int i = 0; i < input.Length; i++)
             {
-                for (int i = 0; i < input.Length; i++)
+                if (i >= startIndex && i < endIndex)
                 {
-                    if (i >= startIndex && i < endIndex)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        fullNumber = fullNumber + input[i];
-                    }
-                    else
-                    {
-                        Console.ResetColor();
-                    }
-
-                    Console.Write(input[i]);
-
+                    fullNumber = fullNumber + input[i];
                 }
-
-                allNumbersAdded = allNumbersAdded + Convert.ToInt64(fullNumber);
-                Console.WriteLine();
+                
             }
+
+            allNumbersAdded = allNumbersAdded + Convert.ToInt64(fullNumber);
         }
+       
     }
 }

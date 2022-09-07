@@ -6,6 +6,7 @@ public class Program
 {
     static void Main()
     {
-        Labb1.Run();
+        Console.Write("Please input a random string of letters and numbers: ");
+        Labb1.Run(Console.ReadLine());
     }
 }
