@@ -17,7 +17,7 @@ namespace Labb
             Index[] index = new Index[input.Length];
             bool isEntireStringChecked = false;
             int lineCounter = 0;
-            int indexSize = 0;
+            int newIndexSize = 0;
 
             while (!isEntireStringChecked)
             {   
@@ -36,9 +36,9 @@ namespace Labb
                     }
                     else if (nextNumToCheck == input[charCount] && charCount > lineCounter)
                     {                                    
-                        index[indexSize].startIndex = lineCounter;
-                        index[indexSize].stopIndex = charCount + 1;
-                        indexSize++;
+                        index[newIndexSize].startIndex = lineCounter;
+                        index[newIndexSize].stopIndex = charCount + 1;
+                        newIndexSize++;
                         break;
                     }               
                 }
@@ -46,8 +46,8 @@ namespace Labb
                 lineCounter++;
             }
 
-            Index[] newIndex = new Index[indexSize];
-            Array.Copy(index, newIndex, indexSize);
+            Index[] newIndex = new Index[newIndexSize];
+            Array.Copy(index, newIndex, newIndexSize);
             return newIndex;
         }
 
