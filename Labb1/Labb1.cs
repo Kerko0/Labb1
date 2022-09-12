@@ -9,23 +9,24 @@ namespace Labb
 {
     internal class Labb1
     {
-        static int lineCounter;
-        static int[,] index; //column 1: which row. column 2: start or end index ([x,0] = start index, [x,1] = end index)
-        static bool isEntireStringChecked = false;
-
         public static void Run(string input)
-        {                                
-            LineColorAndPrint(input, InputIndexer(input));                     
-            Console.WriteLine("Everything marked in red added together:");
-            Console.WriteLine(NumberAdder(input, InputIndexer(input)));
+        {
+            int[,] index = InputIndexer(input);
 
+            LineColorAndPrint(input, index);                              
+            Console.WriteLine(NumberAdder(input, index));
         }
 
         private static int[,] InputIndexer(string input)
         {
-            lineCounter = 0;
+            //[x,0] is start index
+            //[x,1] is end index
+            // x is row number
+
+            bool isEntireStringChecked = false;
+            int lineCounter = 0;
             int indexNum = 0;
-            index = new int[input.Length - 1, 2];
+            int[,] tempIndex = new int[input.Length - 1, 2];
 
             while (!isEntireStringChecked)
             {   
@@ -44,7 +45,8 @@ namespace Labb
                     }
                     else if (nextNumToCheck == input[letterCount] && letterCount > lineCounter)
                     {                                    
-                        SetIndex(lineCounter, letterCount + 1, indexNum);
+                        tempIndex[indexNum, 0] = lineCounter;
+                        tempIndex[indexNum, 1] = letterCount + 1;
                         indexNum++;
                         break;
                     }               
@@ -54,16 +56,9 @@ namespace Labb
             }
 
             int[,] newIndex = new int[indexNum, 2];
-            Array.Copy(index, newIndex, indexNum * 2);
-            isEntireStringChecked = false;
+            Array.Copy(tempIndex, newIndex, indexNum * 2);
             return newIndex;
         }
-
-       private static void SetIndex(int indexStart, int indexEnd, int indexNum)
-       {
-            index[indexNum, 0] = indexStart;
-            index[indexNum, 1] = indexEnd;
-       }
 
         private static void LineColorAndPrint(string input, int[,] index)
         {
@@ -86,7 +81,7 @@ namespace Labb
 
         private static Int64 NumberAdder(string input, int[,] index)
         {
-            string bigNumbers = "0";
+            string combinedNumber = "0";
             Int64 totalSum = 0;
             bool addNumber(int letterNum, int row) => letterNum >= index[row, 0] && letterNum < index[row, 1] ? true : false;
 
@@ -96,23 +91,22 @@ namespace Labb
                 {
                     if (addNumber(letterNum, row))
                     {
-                        bigNumbers = bigNumbers + input[letterNum];                   
+                        combinedNumber = combinedNumber + input[letterNum];                   
                     }
                 }
-
                 try
                 {
-                    totalSum = totalSum + Convert.ToInt64(bigNumbers);
+                    totalSum = totalSum + Convert.ToInt64(combinedNumber);
                 }
                 catch
                 {
-                    Console.WriteLine($"Invalid character in string. Some numbers wont be added to total.");
+                    Console.WriteLine("Invalid character in string. Some numbers wont be added to total.");
                 }
-
                 
-                bigNumbers = "0";
+                combinedNumber = "0";
             }
 
+            Console.WriteLine("Everything marked in red added together:");
             return totalSum;
         }
     } 
