@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,101 +9,111 @@ namespace Labb
 {
     internal class Labb1
     {
-        static bool endIndexSet;   
-        static int lineCount;
-        static int startIndex;
-        static int endIndex;
-        static Int64 allNumbersAdded;
-        static bool isEntireStringIndexed = false;
-        public static void Run(string input)
-        {
-            lineCount = 0;
-            startIndex = 0;
+        static int lineCounter;
+        static int[,] index; //column 1: which row. column 2: start or end index ([x,0] = start index, [x,1] = end index)
+        static bool isEntireStringChecked = false;
 
-            while (!isEntireStringIndexed)
-            {
-                InputIndexer(input);
-                
-                if (endIndexSet)
+        public static void Run(string input)
+        {                                
+            LineColorAndPrint(input, InputIndexer(input));                     
+            Console.WriteLine("Everything marked in red added together:");
+            Console.WriteLine(NumberAdder(input, InputIndexer(input)));
+
+        }
+
+        private static int[,] InputIndexer(string input)
+        {
+            lineCounter = 0;
+            int indexNum = 0;
+            index = new int[input.Length - 1, 2];
+
+            while (!isEntireStringChecked)
+            {   
+                if (lineCounter == (input.Length - 1))
                 {
-                    LineColorAndPrint(input, startIndex, endIndex);
-                    NumberAdder(input, startIndex, endIndex);
+                    isEntireStringChecked = true;
                 }
 
-                endIndexSet = false;
-                lineCount++;
+                char nextNumToCheck = input[lineCounter];
+
+                for (int letterCount = lineCounter; letterCount < input.Length; letterCount++)
+                {
+                    if (char.IsLetter(input[letterCount]) || letterCount == input.Length)
+                    {
+                        break;
+                    }
+                    else if (nextNumToCheck == input[letterCount] && letterCount > lineCounter)
+                    {                                    
+                        SetIndex(lineCounter, letterCount + 1, indexNum);
+                        indexNum++;
+                        break;
+                    }               
+                }
+
+                lineCounter++;
+            }
+
+            int[,] newIndex = new int[indexNum, 2];
+            Array.Copy(index, newIndex, indexNum * 2);
+            isEntireStringChecked = false;
+            return newIndex;
+        }
+
+       private static void SetIndex(int indexStart, int indexEnd, int indexNum)
+       {
+            index[indexNum, 0] = indexStart;
+            index[indexNum, 1] = indexEnd;
+       }
+
+        private static void LineColorAndPrint(string input, int[,] index)
+        {
+            ConsoleColor color(int letterNum, int row) 
+                => letterNum >= index[row, 0] && letterNum < index[row, 1] ? Console.ForegroundColor = ConsoleColor.Red : Console.ForegroundColor = ConsoleColor.Gray;
+
+            for (int row = 0; row < index.GetLength(0); row++)
+            {
+                for (int letterNum = 0; letterNum < input.Length; letterNum++)
+                {                  
+                    Console.ForegroundColor = color(letterNum, row);                    
+                    Console.Write(input[letterNum]);
+                }
+
+                Console.WriteLine();
             }
 
             Console.ResetColor();
-            Console.WriteLine("Everything marked in red added together:");
-            Console.WriteLine(allNumbersAdded);
+        }   
 
-        }
-        private static void InputIndexer(string input)
+        private static Int64 NumberAdder(string input, int[,] index)
         {
-            if (lineCount == (input.Length - 1))
+            string bigNumbers = "0";
+            Int64 totalSum = 0;
+            bool addNumber(int letterNum, int row) => letterNum >= index[row, 0] && letterNum < index[row, 1] ? true : false;
+
+            for (int row = 0; row < index.GetLength(0); row++)
             {
-                isEntireStringIndexed = true;
-            }
-
-            startIndex = lineCount;
-
-            char nextNumToCheck = input[lineCount];
-
-            for (int letterCount = 0; letterCount < input.Length; letterCount++)
-            {
-                if (nextNumToCheck == input[letterCount] && letterCount > startIndex && !endIndexSet)
-                {                   
-                    endIndex = letterCount + 1;
-                    for (int i = startIndex; i < endIndex; i++)
+                for (int letterNum = 0; letterNum < input.Length; letterNum++)
+                {
+                    if (addNumber(letterNum, row))
                     {
-                        if (char.IsLetter(input[i]))
-                        {
-                            endIndexSet = false;
-                            endIndex = 0;
-                        }
-                        else
-                        {
-                            endIndexSet = true;
-                        }
+                        bigNumbers = bigNumbers + input[letterNum];                   
                     }
-                }               
-            }         
-        }
-
-        private static void LineColorAndPrint(string input, int startIndex, int endIndex)
-        {
-            for (int i = 0; i < input.Length; i++)
-            {
-                if (i >= startIndex && i < endIndex)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                }
-                else
-                {
-                    Console.ResetColor();
                 }
 
-                Console.Write(input[i]);
-            }
-
-            Console.WriteLine();
-        }
-
-        private static void NumberAdder(string input, int startIndex, int endIndex)
-        {
-            string fullNumber = "";
-
-            for (int i = 0; i < input.Length; i++)
-            {
-                if (i >= startIndex && i < endIndex)
+                try
                 {
-                    fullNumber = fullNumber + input[i];
-                }              
+                    totalSum = totalSum + Convert.ToInt64(bigNumbers);
+                }
+                catch
+                {
+                    Console.WriteLine($"Invalid character in string. Some numbers wont be added to total.");
+                }
+
+                
+                bigNumbers = "0";
             }
 
-            allNumbersAdded = allNumbersAdded + Convert.ToInt64(fullNumber);
+            return totalSum;
         }
-       
-    }
+    } 
 }
