@@ -6,18 +6,18 @@ namespace Labb
     {      
         public static void Run(string input)
         {          
-            Index[] index = InputIndexer(input);
+            Index[] subStringIndex = SubStringFinder(input);
 
-            LineColorAndPrint(input, index);                             
-            Console.WriteLine($"Everything marked red added together: {NumberAdder(input, index)}");
+            StringColorAndPrint(input, subStringIndex);                             
+            Console.WriteLine($"Everything marked red added together: {SubStringNumberAdder(input, subStringIndex)}");
         }
 
-        private static Index[] InputIndexer(string input)
+        private static Index[] SubStringFinder(string input)
         {
             Index[] index = new Index[input.Length];
             bool isEntireStringChecked = false;
             int lineCounter = 0;
-            int newIndexSize = 0;
+            int i = 0;
 
             while (!isEntireStringChecked)
             {   
@@ -28,30 +28,30 @@ namespace Labb
 
                 char nextNumToCheck = input[lineCounter];
 
-                for (int charCount = lineCounter; charCount < input.Length; charCount++)
+                for (int charNum = lineCounter; charNum < input.Length; charNum++)
                 {
-                    if (char.IsLetter(input[charCount]) || charCount == input.Length)
+                    if (char.IsLetter(input[charNum]) || charNum == input.Length)
                     {
                         break;
                     }
-                    else if (nextNumToCheck == input[charCount] && charCount > lineCounter)
+                    else if (nextNumToCheck == input[charNum] && charNum > lineCounter)
                     {                                    
-                        index[newIndexSize].startIndex = lineCounter;
-                        index[newIndexSize].stopIndex = charCount + 1;
-                        newIndexSize++;
+                        index[i].startIndex = lineCounter;
+                        index[i].stopIndex = charNum + 1;
+                        i++;
                         break;
                     }               
                 }
 
                 lineCounter++;
             }
-
-            Index[] newIndex = new Index[newIndexSize];
-            Array.Copy(index, newIndex, newIndexSize);
+           
+            Index[] newIndex = new Index[i];
+            Array.Copy(index, newIndex, i);
             return newIndex;
         }
 
-        private static void LineColorAndPrint(string input, Index[] index)
+        private static void StringColorAndPrint(string input, Index[] index)
         {
             ConsoleColor color(int charNum, int row) 
                 => charNum >= index[row].startIndex && charNum < index[row].stopIndex ? Console.ForegroundColor = ConsoleColor.Red : Console.ForegroundColor = ConsoleColor.Gray;
@@ -70,7 +70,7 @@ namespace Labb
             Console.ResetColor();
         }   
 
-        private static Int64 NumberAdder(string input, Index[] index)
+        private static Int64 SubStringNumberAdder(string input, Index[] index)
         {
             string combinedNumber = "0";
             Int64 totalSum = 0;
@@ -88,10 +88,14 @@ namespace Labb
                 try
                 {
                     totalSum = totalSum + Convert.ToInt64(combinedNumber);
-                }
-                catch
+                }             
+                catch(OverflowException ex)
                 {
-                    Console.WriteLine("Invalid character in string. Some numbers wont be added to total.");
+                    Console.WriteLine("Limit of total sum reached! Unable to add more, result may be inaccurate.");
+                }
+                catch(FormatException ex)
+                {
+                    Console.WriteLine("Unknown character in path, unable to add to total sum.");
                 }
                 
                 combinedNumber = "0";
