@@ -9,7 +9,7 @@ namespace Labb
             Index[] subStringIndex = SubStringFinder(input);
 
             StringColorAndPrint(input, subStringIndex);                             
-            Console.WriteLine($"Everything marked red added together: {NumberAdder(input, subStringIndex)}");
+            Console.WriteLine($"Everything marked red added together: {SubStringNumberAdder(input, subStringIndex)}");
         }
 
         private static Index[] SubStringFinder(string input)
@@ -45,7 +45,7 @@ namespace Labb
 
                 lineCounter++;
             }
-
+           
             Index[] newIndex = new Index[i];
             Array.Copy(index, newIndex, i);
             return newIndex;
@@ -72,7 +72,7 @@ namespace Labb
 
      
 
-        private static Int64 NumberAdder(string input, Index[] index)
+        private static Int64 SubStringNumberAdder(string input, Index[] index)
         {
             string combinedNumber = "0";
             Int64 totalSum = 0;
