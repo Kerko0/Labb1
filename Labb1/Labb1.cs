@@ -28,16 +28,16 @@ namespace Labb
 
                 char nextNumToCheck = input[lineCounter];
 
-                for (int charCount = lineCounter; charCount < input.Length; charCount++)
+                for (int charNum = lineCounter; charNum < input.Length; charNum++)
                 {
-                    if (char.IsLetter(input[charCount]) || charCount == input.Length)
+                    if (char.IsLetter(input[charNum]) || charNum == input.Length)
                     {
                         break;
                     }
-                    else if (nextNumToCheck == input[charCount] && charCount > lineCounter)
+                    else if (nextNumToCheck == input[charNum] && charNum > lineCounter)
                     {                                    
                         index[i].startIndex = lineCounter;
-                        index[i].stopIndex = charCount + 1;
+                        index[i].stopIndex = charNum + 1;
                         i++;
                         break;
                     }               
@@ -45,8 +45,6 @@ namespace Labb
 
                 lineCounter++;
             }
-
-            
 
             Index[] newIndex = new Index[i];
             Array.Copy(index, newIndex, i);
