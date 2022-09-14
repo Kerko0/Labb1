@@ -70,8 +70,6 @@ namespace Labb
             Console.ResetColor();
         }   
 
-     
-
         private static Int64 SubStringNumberAdder(string input, Index[] index)
         {
             string combinedNumber = "0";
@@ -90,10 +88,14 @@ namespace Labb
                 try
                 {
                     totalSum = totalSum + Convert.ToInt64(combinedNumber);
-                }
-                catch
+                }             
+                catch(OverflowException ex)
                 {
-                    Console.WriteLine("Invalid character in string. Some numbers wont be added to total.");
+                    Console.WriteLine("Limit of total sum reached! Unable to add more, result may be inaccurate.");
+                }
+                catch(FormatException ex)
+                {
+                    Console.WriteLine("Unknown character in path, unable to add to total sum.");
                 }
                 
                 combinedNumber = "0";
