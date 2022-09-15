@@ -30,7 +30,7 @@ namespace Labb
 
                 for (int charNum = lineCounter; charNum < input.Length; charNum++)
                 {
-                    if (char.IsLetter(input[charNum]) || charNum == input.Length)
+                    if (!char.IsNumber(input[charNum]) || charNum == input.Length)
                     {
                         break;
                     }
