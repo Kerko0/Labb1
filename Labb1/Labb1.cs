@@ -92,11 +92,7 @@ namespace Labb
                 catch(OverflowException)
                 {
                     Console.WriteLine("Limit of total sum reached! Unable to add more, result may be inaccurate.");
-                }
-                catch(FormatException)
-                {
-                    Console.WriteLine("Unknown character in path, unable to add to total sum.");
-                }
+                }    
                 
                 combinedNumber = "0";
             }
